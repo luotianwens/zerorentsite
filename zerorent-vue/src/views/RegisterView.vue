@@ -53,7 +53,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NCard, NForm, NFormItem, NInput, NButton, useNotification } from 'naive-ui'
 import type { NotificationType } from 'naive-ui'
-import axios from 'axios'
+import { handleRegister } from '@/api'
 
 const username = ref<string>('')
 const password = ref<string>('')
@@ -82,9 +82,7 @@ const register = async () => {
 
   console.log('Registering user:', username.value, email.value, phone.value)
   try {
-    const response = await axios.post('http://localhost:5000/apis/register', data, {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    const response = handleRegister(data)
 
     console.log('response:', response)
 
@@ -97,7 +95,8 @@ const register = async () => {
     setTimeout(() => {
       router.push('/login')
     }, 3000)
-  } catch (error: any) {
+  } catch (error) {
+    // Todo: axios封装统一的错误处理
     if (error.response) {
       console.error('err response:', error.response.data)
       if (error.response.data.erro == '用户名已存在') {

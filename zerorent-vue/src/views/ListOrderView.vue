@@ -28,57 +28,55 @@
   </div>
 </template>
 
-<script lang="ts">
-const searchValue = ref<string>('')
-const data = ref<Order[]>(orders.value)
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { createColumns, orders } from './SubmitOrderView.vue'
+// import type { Order } from './SubmitOrderView.vue'
+import { Search } from '@vicons/ionicons5/' // Corrected import path
+import { handleGetOrders } from '@/api'
 
+
+const searchValue = ref<string>('')
 function DoSearch() {
   data.value = orders.value.filter((t) => t.name == searchValue.value)
 }
-</script>
 
-<script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { createColumns, orders } from './SubmitOrderView.vue'
-import type { Order } from './SubmitOrderView.vue'
-import { Search } from '@vicons/ionicons5/' // Corrected import path
-import axios from 'axios'
-
-const columns = createColumns()
 // const data = orders;
 // const data = ref<Order[]>(orders.value);
-const pagination = { pageSize: 10 }
 
-onMounted(async () => {
+const data = ref(orders.value)
+const pagination = { pageSize: 10 }
+const columns = createColumns()
+const initData = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/apis/getOrders', {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    const response = await handleGetOrders()
     data.value = []
-    const totalDataNum: number = response.data.total
-    const currentDataNum: number = response.data.data.length
+    const totalDataNum: number = response.total
+    const currentDataNum: number = response.data.length
 
     console.log('response', response)
 
-    console.log('totalDataNum', response.data.total)
-    console.log('currentDataNum', response.data.data.length)
+    console.log('totalDataNum', response.total)
+    console.log('currentDataNum', response.data.length)
 
     for (let i = 0; i < currentDataNum; i++) {
       data.value.push({
-        id: response.data.data[i].id,
-        name: response.data.data[i].name,
-        description: response.data.data[i].description,
-        price: response.data.data[i].phone,
-        stat: response.data.data[i].stat, // 使用预定义的状态类型
-        date: response.data.data[i].date,
-        publisher: response.data.data[i].publisher_name, // 复用用户类型
-        worker: response.data.data[i].worker_name, // 复用用户类型
+        id: response.data[i].id,
+        name: response.data[i].name,
+        description: response.data[i].description,
+        price: response.data[i].phone,
+        stat: response.data[i].stat, // 使用预定义的状态类型
+        date: response.data[i].date,
+        publisher: response.data[i].publisher_name, // 复用用户类型
+        worker: response.data[i].worker_name, // 复用用户类型
       })
     }
   } catch (error) {
     console.log('get error')
   }
-})
+}
+
+initData()
 </script>
 
 <style scoped>

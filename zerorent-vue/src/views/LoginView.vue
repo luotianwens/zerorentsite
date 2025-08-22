@@ -40,7 +40,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NCard, NForm, NFormItem, NInput, NButton, useNotification } from 'naive-ui'
 import { isLogined } from '../App.vue'
-import axios from 'axios'
+import { handleLogin } from '@/api'
 
 const username = ref<string>('')
 const password = ref<string>('')
@@ -58,14 +58,12 @@ const login = async () => {
   }
 
   try {
-    const response = await axios.post('http://localhost:5000/apis/login', data, {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    const response = await handleLogin(data)
 
     console.log('response:', response)
 
-    currentUserName.value = username.value
-    currentUserId.value = response.data.data.id
+    currentUserName.value = response.data.username
+    currentUserId.value = response.data.id
 
     console.log('currentUserId:', currentUserId.value)
     console.log('currentUserName:', currentUserName.value)

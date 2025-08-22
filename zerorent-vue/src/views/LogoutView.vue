@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { NCard, NForm, NFormItem, NInput, NButton, useDialog } from 'naive-ui'
 import { isLogined } from '../App.vue'
-import axios from 'axios'
 
 const router = useRouter()
 const dialog = useDialog()

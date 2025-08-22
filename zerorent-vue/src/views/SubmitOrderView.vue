@@ -42,7 +42,7 @@
 
 <script lang="ts">
 // 1. 定义用户对象类型
-type User = {
+/* type User = {
   id: number
   name: string
 }
@@ -57,7 +57,7 @@ export type Order = {
   date: string
   publisher: User // 复用用户类型
   worker: User | null // 复用用户类型
-}
+} */
 
 export type modelRef = {
   name: string | null
@@ -65,7 +65,7 @@ export type modelRef = {
   price: number | null
 }
 
-export const orders = ref<Order[]>([
+export const orders = ref<OrderItem[]>([
   {
     id: 1,
     name: '订单1',
@@ -130,9 +130,10 @@ import { defineComponent } from 'vue'
 import { useNotification } from 'naive-ui'
 // import { namespace } from 'naive-ui/es/_utils/cssr'
 import type { FormInst, FormItemInst } from 'naive-ui'
-import axios from 'axios'
 import { isLogined } from '../App.vue'
 import { currentUserId } from './LoginView.vue'
+import { OrderItem } from '@/api/api'
+import { handlePostOrder } from '@/api'
 
 const columns = createColumns()
 const data = orders
@@ -178,9 +179,7 @@ const handleValidateButtonClick = async () => {
   }
 
   try {
-    const response = await axios.post('http://localhost:5000/apis/postOrder', data, {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    const response = await handlePostOrder(data)
 
     console.log('response:', response)
 
@@ -195,6 +194,7 @@ const handleValidateButtonClick = async () => {
       router.push('/')
     }, 300)
   } catch (error: any) {
+    // Todo: axios封装统一的错误处理
     if (error.response) {
       console.error('err response:', error.response.data)
       if (error.response.data.error == '用户不存在') {

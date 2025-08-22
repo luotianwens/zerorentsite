@@ -33,8 +33,9 @@ export default defineConfig({
     proxy: {
       '/apis': {
         target: 'http://localhost:5000',
+        // target: 'https://zerorent.pythonanywhere.com',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/apis/, '')
+        // rewrite: path => path.replace(/^\/apis/, '')
       }
     }
   }

@@ -23,12 +23,12 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { NCard } from 'naive-ui'
-import axios from 'axios'
+import { handleGetDevelopers } from '@/api'
 
-type developerType = {
-  id: string
-  name: string
-}
+// type developerType = {
+//   id: string
+//   name: string
+// }
 const columns: any = [
   { title: '账户', key: 'id' },
   { title: '用户名', key: 'name' },
@@ -36,20 +36,18 @@ const columns: any = [
 
 const pagination = { pageSize: 10 }
 
-const data = ref<developerType[]>([])
+const data = ref([])
 
 onMounted(async () => {
   try {
-    const response = await axios.get('http://localhost:5000/apis/getDevelopers', {
-      headers: { 'Content-Type': 'application/json' },
-    })
-    console.log(response.data.data[0].id)
-    console.log(response.data.data[0].username)
+    const response = await handleGetDevelopers()
+    console.log(response.data[0].id)
+    console.log(response.data[0].username)
     data.value = [
       ...data.value,
       {
-        id: response.data.data[0].id,
-        name: response.data.data[0].username,
+        id: response.data[0].id,
+        name: response.data[0].username,
       },
     ]
   } catch (error) {
